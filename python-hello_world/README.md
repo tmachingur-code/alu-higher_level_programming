@@ -1,0 +1,1 @@
+This project introduces the fundamentals of Python programming. It covers running Python scripts, using the Python interpreter, printing output, working with strings, indexing and slicing, following the Zen of Python, and writing code that complies with the official Python style guide.
