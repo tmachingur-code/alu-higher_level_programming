@@ -1,3 +1,4 @@
 #!/usr/bin/python3
-str = __import__("__main__").__doc__
-print(str[:6] + str[9:18] + str[18:])
+str = "Python is an interpreted, interactive, object-oriented programming language that combines remarkable power with very clear syntax"
+str = str[39:66] + str[106:112] + str[:6]
+print(str)
