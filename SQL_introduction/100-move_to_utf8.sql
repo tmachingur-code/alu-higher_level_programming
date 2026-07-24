@@ -1,9 +1,11 @@
--- Converts hbtn_0c_0 database, first_table, and name field to UTF8
--- Change database and table character set to utf8mb4
+-- Converts hbtn_0c_0 database, table and field to UTF8
+-- Set database, table and field character set to utf8mb4
 
 ALTER DATABASE hbtn_0c_0
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
+
+USE hbtn_0c_0;
 
 ALTER TABLE first_table
 CONVERT TO CHARACTER SET utf8mb4
