@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """Script that reads logs and computes statistics."""
 
-
 import sys
 
 
@@ -21,11 +20,11 @@ line_count = 0
 
 
 def print_stats():
-    """Print the current log statistics."""
+    """Print the current statistics."""
     print("File size: {}".format(total_size))
 
     for code in sorted(status_codes):
-        if status_codes[code] != 0:
+        if status_codes[code]:
             print("{}: {}".format(code, status_codes[code]))
 
 
@@ -35,7 +34,6 @@ try:
 
         try:
             parts = line.split()
-
             status = int(parts[-2])
             size = int(parts[-1])
 
@@ -50,6 +48,8 @@ try:
         if line_count % 10 == 0:
             print_stats()
 
+    if line_count % 10 != 0 or line_count == 0:
+        print_stats()
+
 except KeyboardInterrupt:
     print_stats()
-    raise
