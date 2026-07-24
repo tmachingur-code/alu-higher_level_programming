@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-"""Script that reads log input and computes statistics."""
+"""Script that reads stdin and computes log metrics."""
 
 import sys
 
 
-total_size = 0
+total_file_size = 0
 status_codes = {
     200: 0,
     301: 0,
@@ -16,46 +16,45 @@ status_codes = {
     500: 0
 }
 
-line_count = 0
+count = 0
 
 
-def print_stats():
-    """Print the accumulated log statistics."""
-    print("File size: {}".format(total_size))
+def print_statistics():
+    """Print statistics."""
+    print("File size: {}".format(total_file_size))
 
-    for code in sorted(status_codes):
-        if status_codes[code] != 0:
-            print("{}: {}".format(code, status_codes[code]))
-
-
-def process_line(line):
-    """Process a single log line and update statistics."""
-    global total_size
-
-    try:
-        parts = line.split()
-        status = int(parts[-2])
-        size = int(parts[-1])
-
-        total_size += size
-
-        if status in status_codes:
-            status_codes[status] += 1
-
-    except (ValueError, IndexError):
-        pass
+    for key in sorted(status_codes):
+        if status_codes[key] != 0:
+            print("{}: {}".format(key, status_codes[key]))
 
 
 try:
     for line in sys.stdin:
-        line_count += 1
-        process_line(line)
+        count += 1
 
-        if line_count % 10 == 0:
-            print_stats()
+        try:
+            data = line.split()
 
-    if line_count % 10 != 0 or line_count == 0:
-        print_stats()
+            if len(data) < 2:
+                continue
+
+            status = data[-2]
+            size = data[-1]
+
+            total_file_size += int(size)
+
+            if int(status) in status_codes:
+                status_codes[int(status)] += 1
+
+        except (ValueError, IndexError):
+            continue
+
+        if count == 10:
+            print_statistics()
+            count = 0
+
+    if count != 0 or total_file_size == 0:
+        print_statistics()
 
 except KeyboardInterrupt:
-    print_stats()
+    print_statistics()
