@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Script that reads logs and computes statistics."""
+"""Script that reads log input and computes statistics."""
 
 import sys
 
@@ -20,30 +20,36 @@ line_count = 0
 
 
 def print_stats():
-    """Print the current statistics."""
+    """Print the accumulated log statistics."""
     print("File size: {}".format(total_size))
 
     for code in sorted(status_codes):
-        if status_codes[code]:
+        if status_codes[code] != 0:
             print("{}: {}".format(code, status_codes[code]))
+
+
+def process_line(line):
+    """Process a single log line and update statistics."""
+    global total_size
+
+    try:
+        parts = line.split()
+        status = int(parts[-2])
+        size = int(parts[-1])
+
+        total_size += size
+
+        if status in status_codes:
+            status_codes[status] += 1
+
+    except (ValueError, IndexError):
+        pass
 
 
 try:
     for line in sys.stdin:
         line_count += 1
-
-        try:
-            parts = line.split()
-            status = int(parts[-2])
-            size = int(parts[-1])
-
-            total_size += size
-
-            if status in status_codes:
-                status_codes[status] += 1
-
-        except (ValueError, IndexError):
-            pass
+        process_line(line)
 
         if line_count % 10 == 0:
             print_stats()
