@@ -1,0 +1,1 @@
+This project introduces the fundamentals of SQL and MySQL. It covers creating and managing databases, writing SQL queries to retrieve and manipulate data, creating and modifying tables, and using basic SQL statements and functions to interact with relational databases.
