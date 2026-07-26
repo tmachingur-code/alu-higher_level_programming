@@ -1,3 +1,3 @@
 #!/bin/bash
-# Sends a PUT request and follows redirects to get the final response.
-curl -sL -X PUT 0.0.0.0:5000/catch_me
+# Makes a request that causes the server to respond with "You got me!"
+curl -sL -X PUT -d "user_id=98" 0.0.0.0:5000/catch_me
