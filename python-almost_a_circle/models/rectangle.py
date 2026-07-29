@@ -8,7 +8,9 @@ class Rectangle(Base):
     """Represents a rectangle."""
 
     def __init__(self, width, height, x=0, y=0, id=None):
-        """Initialize a Rectangle."""
+        """
+        Initialize a Rectangle instance.
+        """
         super().__init__(id)
         self.width = width
         self.height = height
@@ -18,15 +20,21 @@ class Rectangle(Base):
     def area(self):
         """
         Calculate and return the area of the rectangle.
-
-        Returns:
-            int: The area of the rectangle.
         """
         return self.width * self.height
 
+    def display(self):
+        """
+        Print the rectangle using the # character.
+        """
+        for _ in range(self.height):
+            print("#" * self.width)
+
     @property
     def width(self):
-        """Get the width."""
+        """
+        Get the width.
+        """
         return self.__width
 
     @width.setter
