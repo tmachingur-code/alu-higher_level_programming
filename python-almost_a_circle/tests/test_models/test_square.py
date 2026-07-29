@@ -1,50 +1,82 @@
 #!/usr/bin/python3
-"""Unit tests for Square."""
+"""Unit tests for Square class."""
 
 import unittest
+
 from models.square import Square
 
 
 class TestSquare(unittest.TestCase):
-    """Square test cases."""
+    """Test Square class."""
 
-    def test_constructor(self):
-        s = Square(5)
-        self.assertEqual(s.size, 5)
+    def setUp(self):
+        """Create Square object."""
+        self.s = Square(5, 2, 3, 1)
+
+    def test_creation(self):
+        """Test square creation."""
+        self.assertEqual(self.s.size, 5)
+        self.assertEqual(self.s.width, 5)
+        self.assertEqual(self.s.height, 5)
+        self.assertEqual(self.s.x, 2)
+        self.assertEqual(self.s.y, 3)
+        self.assertEqual(self.s.id, 1)
 
     def test_area(self):
-        s = Square(4)
-        self.assertEqual(s.area(), 16)
-
-    def test_str(self):
-        s = Square(5, 1, 2, 99)
-        self.assertEqual(str(s), "[Square] (99) 1/2 - 5")
+        """Test square area."""
+        self.assertEqual(self.s.area(), 25)
 
     def test_size_setter(self):
-        s = Square(5)
-        s.size = 8
-        self.assertEqual(s.size, 8)
+        """Test changing size."""
+        self.s.size = 10
 
-    def test_size_type(self):
-        s = Square(5)
+        self.assertEqual(self.s.size, 10)
+        self.assertEqual(self.s.width, 10)
+        self.assertEqual(self.s.height, 10)
+
+    def test_invalid_size(self):
+        """Test invalid size."""
         with self.assertRaises(TypeError):
-            s.size = "8"
+            self.s.size = "5"
 
-    def test_dictionary(self):
-        s = Square(4, 2, 3, 10)
-        d = s.to_dictionary()
-        self.assertEqual(d["size"], 4)
+    def test_str(self):
+        """Test square string representation."""
+        result = str(self.s)
+        expected = "[Square] (1) 2/3 - 5"
+
+        self.assertEqual(result, expected)
 
     def test_update_args(self):
-        s = Square(5)
-        s.update(1, 6, 2, 3)
-        self.assertEqual(s.size, 6)
+        """Test update with arguments."""
+        self.s.update(89, 8, 4, 5)
+
+        self.assertEqual(self.s.id, 89)
+        self.assertEqual(self.s.size, 8)
+        self.assertEqual(self.s.x, 4)
+        self.assertEqual(self.s.y, 5)
 
     def test_update_kwargs(self):
-        s = Square(5)
-        s.update(size=7, x=2)
-        self.assertEqual(s.size, 7)
-        self.assertEqual(s.x, 2)
+        """Test update with keyword arguments."""
+        self.s.update(
+            id=20,
+            size=7,
+            x=1,
+            y=2
+        )
+
+        self.assertEqual(self.s.id, 20)
+        self.assertEqual(self.s.size, 7)
+        self.assertEqual(self.s.x, 1)
+        self.assertEqual(self.s.y, 2)
+
+    def test_dictionary(self):
+        """Test dictionary conversion."""
+        result = self.s.to_dictionary()
+
+        self.assertEqual(result["id"], 1)
+        self.assertEqual(result["size"], 5)
+        self.assertEqual(result["x"], 2)
+        self.assertEqual(result["y"], 3)
 
 
 if __name__ == "__main__":

@@ -6,44 +6,41 @@ from models.base import Base
 
 
 class TestBase(unittest.TestCase):
-    """Test cases for Base."""
+    """Test Base class."""
 
-    def test_auto_id(self):
-        """Test automatic id assignment."""
+    def setUp(self):
+        """Reset Base counter."""
+        Base._Base__nb_objects = 0
+
+    def test_id_creation(self):
+        """Test automatic and custom id assignment."""
         b1 = Base()
         b2 = Base()
-        self.assertEqual(b2.id, b1.id + 1)
+        b3 = Base(89)
 
-    def test_given_id(self):
-        """Test custom id."""
-        b = Base(89)
-        self.assertEqual(b.id, 89)
-
-    def test_to_json_string_none(self):
-        """Test None input."""
-        self.assertEqual(Base.to_json_string(None), "[]")
-
-    def test_to_json_string_empty(self):
-        """Test empty list."""
-        self.assertEqual(Base.to_json_string([]), "[]")
+        self.assertEqual(b1.id, 1)
+        self.assertEqual(b2.id, 2)
+        self.assertEqual(b3.id, 89)
 
     def test_to_json_string(self):
-        """Test JSON serialization."""
-        d = [{"id": 12}]
-        self.assertIsInstance(Base.to_json_string(d), str)
+        """Test converting list dictionaries to JSON."""
+        self.assertEqual(Base.to_json_string(None), "[]")
+        self.assertEqual(Base.to_json_string([]), "[]")
 
-    def test_from_json_string_none(self):
-        """Test None JSON."""
-        self.assertEqual(Base.from_json_string(None), [])
+        result = Base.to_json_string([{"id": 12}])
 
-    def test_from_json_string_empty(self):
-        """Test empty JSON."""
-        self.assertEqual(Base.from_json_string("[]"), [])
+        self.assertEqual(result, '[{"id": 12}]')
+        self.assertIsInstance(result, str)
 
     def test_from_json_string(self):
-        """Test JSON deserialization."""
-        result = Base.from_json_string('[{"id":89}]')
-        self.assertEqual(result[0]["id"], 89)
+        """Test converting JSON to list."""
+        self.assertEqual(Base.from_json_string(None), [])
+        self.assertEqual(Base.from_json_string("[]"), [])
+
+        result = Base.from_json_string('[{"id": 89}]')
+
+        self.assertEqual(result, [{"id": 89}])
+        self.assertIsInstance(result, list)
 
 
 if __name__ == "__main__":
