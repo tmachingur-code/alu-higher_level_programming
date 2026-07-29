@@ -137,6 +137,24 @@ class TestRectangle(unittest.TestCase):
         self.assertEqual(dictionary["x"], 1)
         self.assertEqual(dictionary["y"], 9)
 
+    def test_display_without_xy(self):
+        """Test display without x and y"""
+        r = Rectangle(2, 3)
+
+        self.assertIsNone(r.display())
+
+    def test_display_with_x(self):
+        """Test display with x"""
+        r = Rectangle(2, 3, 1)
+
+        self.assertIsNone(r.display())
+
+    def test_display_with_x_y(self):
+        """Test display with x and y"""
+        r = Rectangle(2, 3, 1, 2)
+
+        self.assertIsNone(r.display())
+
 
 if __name__ == "__main__":
     unittest.main()

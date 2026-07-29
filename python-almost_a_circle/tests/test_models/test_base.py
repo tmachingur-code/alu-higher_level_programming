@@ -166,6 +166,27 @@ class TestBase(unittest.TestCase):
 
         self.assertEqual(result, [])
 
+    def test_save_square_none(self):
+        """Test Square save None"""
+        Square.save_to_file(None)
+
+        with open("Square.json", "r") as file:
+            self.assertEqual(file.read(), "[]")
+
+    def test_save_square_empty(self):
+        """Test Square save empty list"""
+        Square.save_to_file([])
+
+        with open("Square.json", "r") as file:
+            self.assertEqual(file.read(), "[]")
+
+    def test_save_rectangle_empty(self):
+        """Test Rectangle save empty list"""
+        Rectangle.save_to_file([])
+
+        with open("Rectangle.json", "r") as file:
+            self.assertEqual(file.read(), "[]")
+
     @classmethod
     def tearDownClass(cls):
         """Remove created files"""
