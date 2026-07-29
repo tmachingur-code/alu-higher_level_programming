@@ -10,41 +10,51 @@ from models.square import Square
 
 
 class TestBase(unittest.TestCase):
-    """Test Base"""
+    """Test Base class"""
 
-    def test_base_without_id(self):
-        """Base assigns automatic id"""
+    def setUp(self):
+        """Reset ID counter"""
+        Base._Base__nb_objects = 0
+
+    def tearDown(self):
+        """Remove created files"""
+        for filename in ["Rectangle.json", "Square.json"]:
+            if os.path.exists(filename):
+                os.remove(filename)
+
+    def test_base_no_id(self):
+        """Test automatic id assignment"""
         b1 = Base()
         b2 = Base()
 
-        self.assertIsNotNone(b1.id)
-        self.assertEqual(b2.id, b1.id + 1)
+        self.assertEqual(b1.id, 1)
+        self.assertEqual(b2.id, 2)
 
     def test_base_with_id(self):
-        """Base saves given id"""
+        """Test id assignment"""
         b = Base(89)
 
         self.assertEqual(b.id, 89)
 
     def test_to_json_string_none(self):
-        """None returns empty JSON list"""
+        """Test None JSON conversion"""
         self.assertEqual(
             Base.to_json_string(None),
             "[]"
         )
 
     def test_to_json_string_empty(self):
-        """Empty list returns empty JSON list"""
+        """Test empty list JSON conversion"""
         self.assertEqual(
             Base.to_json_string([]),
             "[]"
         )
 
-    def test_to_json_string_dictionary(self):
-        """Dictionary converted to JSON"""
-        result = Base.to_json_string(
-            [{"id": 12}]
-        )
+    def test_to_json_string_list(self):
+        """Test dictionary list conversion"""
+        data = [{"id": 12}]
+
+        result = Base.to_json_string(data)
 
         self.assertEqual(
             result,
@@ -54,21 +64,21 @@ class TestBase(unittest.TestCase):
         self.assertIsInstance(result, str)
 
     def test_from_json_string_none(self):
-        """None returns empty list"""
+        """Test None conversion"""
         self.assertEqual(
             Base.from_json_string(None),
             []
         )
 
     def test_from_json_string_empty(self):
-        """Empty JSON returns empty list"""
+        """Test empty conversion"""
         self.assertEqual(
             Base.from_json_string("[]"),
             []
         )
 
     def test_from_json_string_list(self):
-        """JSON string returns list"""
+        """Test JSON string conversion"""
         result = Base.from_json_string(
             '[{"id": 89}]'
         )
@@ -80,122 +90,85 @@ class TestBase(unittest.TestCase):
 
         self.assertIsInstance(result, list)
 
-    def test_save_rectangle_file(self):
-        """Save Rectangle objects"""
-        r1 = Rectangle(3, 4)
-        r2 = Rectangle(5, 8, 1)
-
-        Rectangle.save_to_file([r1, r2])
-
-        self.assertTrue(
-            os.path.exists("Rectangle.json")
-        )
-
+    def test_save_rectangle_none(self):
+        """Test Rectangle save None"""
         Rectangle.save_to_file(None)
 
-        with open("Rectangle.json", "r") as file:
-            self.assertEqual(
-                file.read(),
-                "[]"
-            )
-
-    def test_save_square_file(self):
-        """Save Square objects"""
-        s1 = Square(2)
-        s2 = Square(4, 1)
-
-        Square.save_to_file([s1, s2])
-
-        self.assertTrue(
-            os.path.exists("Square.json")
-        )
-
-    def test_create_rectangle(self):
-        """Create Rectangle from dictionary"""
-        dictionary = {
-            "id": 89,
-            "width": 2,
-            "height": 3,
-            "x": 1,
-            "y": 4
-        }
-
-        r = Rectangle.create(**dictionary)
-
-        self.assertEqual(r.id, 89)
-        self.assertEqual(r.width, 2)
-        self.assertEqual(r.height, 3)
-        self.assertEqual(r.x, 1)
-        self.assertEqual(r.y, 4)
-
-    def test_create_square(self):
-        """Create Square from dictionary"""
-        dictionary = {
-            "id": 89,
-            "size": 5,
-            "x": 1,
-            "y": 2
-        }
-
-        s = Square.create(**dictionary)
-
-        self.assertEqual(s.id, 89)
-        self.assertEqual(s.size, 5)
-        self.assertEqual(s.x, 1)
-        self.assertEqual(s.y, 2)
-
-    def test_load_rectangle_file_not_exist(self):
-        """Loading missing file returns empty list"""
-        try:
-            os.remove("Rectangle.json")
-        except FileNotFoundError:
-            pass
-
-        result = Rectangle.load_from_file()
-
-        self.assertEqual(result, [])
-
-    def test_load_square_file_not_exist(self):
-        """Loading missing file returns empty list"""
-        try:
-            os.remove("Square.json")
-        except FileNotFoundError:
-            pass
-
-        result = Square.load_from_file()
-
-        self.assertEqual(result, [])
-
-    def test_save_square_none(self):
-        """Test Square save None"""
-        Square.save_to_file(None)
-
-        with open("Square.json", "r") as file:
-            self.assertEqual(file.read(), "[]")
-
-    def test_save_square_empty(self):
-        """Test Square save empty list"""
-        Square.save_to_file([])
-
-        with open("Square.json", "r") as file:
+        with open("Rectangle.json") as file:
             self.assertEqual(file.read(), "[]")
 
     def test_save_rectangle_empty(self):
         """Test Rectangle save empty list"""
         Rectangle.save_to_file([])
 
-        with open("Rectangle.json", "r") as file:
+        with open("Rectangle.json") as file:
             self.assertEqual(file.read(), "[]")
 
-    @classmethod
-    def tearDownClass(cls):
-        """Remove created files"""
-        for filename in [
-            "Rectangle.json",
-            "Square.json"
-        ]:
-            if os.path.exists(filename):
-                os.remove(filename)
+    def test_save_rectangle_objects(self):
+        """Test Rectangle save objects"""
+        r1 = Rectangle(1, 2)
+
+        Rectangle.save_to_file([r1])
+
+        with open("Rectangle.json") as file:
+            data = file.read()
+
+        self.assertTrue(len(data) > 0)
+
+    def test_save_square_none(self):
+        """Test Square save None"""
+        Square.save_to_file(None)
+
+        with open("Square.json") as file:
+            self.assertEqual(file.read(), "[]")
+
+    def test_save_square_empty(self):
+        """Test Square save empty"""
+        Square.save_to_file([])
+
+        with open("Square.json") as file:
+            self.assertEqual(file.read(), "[]")
+
+    def test_save_square_objects(self):
+        """Test Square save objects"""
+        s1 = Square(1)
+
+        Square.save_to_file([s1])
+
+        with open("Square.json") as file:
+            data = file.read()
+
+        self.assertTrue(len(data) > 0)
+
+    def test_create_rectangle(self):
+        """Test Rectangle create"""
+        r = Rectangle.create(
+            id=89,
+            width=1,
+            height=2,
+            x=3,
+            y=4
+        )
+
+        self.assertEqual(r.id, 89)
+        self.assertEqual(r.width, 1)
+        self.assertEqual(r.height, 2)
+        self.assertEqual(r.x, 3)
+        self.assertEqual(r.y, 4)
+
+    def test_create_square(self):
+        """Test Square create"""
+        s = Square.create(
+            id=89,
+            size=5,
+            x=2,
+            y=3
+        )
+
+        self.assertEqual(s.id, 89)
+        self.assertEqual(s.size, 5)
+        self.assertEqual(s.x, 2)
+        self.assertEqual(s.y, 3)
 
 
 if __name__ == "__main__":
