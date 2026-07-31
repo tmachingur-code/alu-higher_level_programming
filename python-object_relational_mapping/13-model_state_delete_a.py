@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Deletes State objects containing the letter a using SQLAlchemy."""
+"""Deletes State objects containing lowercase a using SQLAlchemy."""
 
 import sys
 from sqlalchemy import create_engine
@@ -21,8 +21,8 @@ if __name__ == "__main__":
     session = Session(engine)
 
     states = session.query(State).filter(
-        State.name.like("%a%")
-    )
+        State.name.collate("utf8mb4_bin").like("%a%")
+    ).all()
 
     for state in states:
         session.delete(state)
