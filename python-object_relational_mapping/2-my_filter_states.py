@@ -19,8 +19,9 @@ def main():
     cursor = db.cursor()
 
     query = (
-        "SELECT * FROM states WHERE name = '{}' "
-        "ORDER BY id ASC".format(sys.argv[4])
+    "SELECT * FROM states "
+    "WHERE BINARY name = '{}' "
+    "ORDER BY id ASC".format(sys.argv[4])
     )
 
     cursor.execute(query)
